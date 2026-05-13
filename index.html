@@ -708,6 +708,11 @@
                         <div class="activity-grid" id="activityGrid"></div>
                     </div>
 
+                    <div class="log-section">
+                        <div class="log-label">3. Notes (optional)</div>
+                        <textarea id="entryNotes" placeholder="Add notes about this activity..." style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 13px; font-family: inherit; resize: vertical; min-height: 60px;"></textarea>
+                    </div>
+
                     <button class="log-button" onclick="logEntry()">Log Entry</button>
                 </div>
             </div>
@@ -770,6 +775,10 @@
                 <div style="margin-bottom: 12px;">
                     <div class="time-input-label">To</div>
                     <input type="time" id="editTimeTo" class="modal-input">
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <div class="time-input-label">Notes</div>
+                    <textarea id="editEntryNotes" placeholder="Notes..." style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 13px; font-family: inherit; resize: vertical; min-height: 60px;"></textarea>
                 </div>
                 <div class="modal-buttons">
                     <button class="modal-btn" onclick="closeEditModal()">Cancel</button>
@@ -996,14 +1005,15 @@
                 energy: selectedEnergy,
                 activity: selectedActivity,
                 timeFrom,
-                timeTo
+                timeTo,
+                notes: document.getElementById('entryNotes').value
             });
-
             saveData();
             selectedEnergy = null;
             selectedActivity = null;
             document.getElementById('timeFrom').value = '';
             document.getElementById('timeTo').value = '';
+            document.getElementById('entryNotes').value = '';
             renderEnergyButtons();
             renderActivityGrid();
         }
@@ -1096,6 +1106,16 @@
                     entryDiv.appendChild(detailsDiv);
                     entriesDiv.appendChild(entryDiv);
                 });
+
+                if (entry.notes) {
+                    const notesSpan = document.createElement('div');
+                    notesSpan.style.fontSize = '10px';
+                    notesSpan.style.color = '#666';
+                    notesSpan.style.marginTop = '4px';
+                    notesSpan.style.fontStyle = 'italic';
+                    notesSpan.textContent = `📝 ${entry.notes}`;
+                    detailsDiv.appendChild(notesSpan);
+                }
 
                 dayCard.appendChild(entriesDiv);
                 container.appendChild(dayCard);
@@ -1244,6 +1264,7 @@
             document.getElementById('editTimeFrom').value = entry.timeFrom;
             document.getElementById('editTimeTo').value = entry.timeTo;
             document.getElementById('editModal').classList.add('active');
+            document.getElementById('editEntryNotes').value = entry.notes || '';
         }
 
         function closeEditModal() {
@@ -1259,6 +1280,7 @@
 
             editingEntry.entry.timeFrom = timeFrom;
             editingEntry.entry.timeTo = timeTo;
+            editingEntry.entry.notes = document.getElementById('editEntryNotes').value;
             saveData();
             renderMonth();
             closeEditModal();
