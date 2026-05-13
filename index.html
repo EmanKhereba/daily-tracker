@@ -461,8 +461,10 @@
         const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
         function getTodayKey() {
-            return new Date().toISOString().split('T')[0];
-        }
+       const now = new Date();
+       now.setHours(now.getHours() + 2);
+       return now.toISOString().split('T')[0];
+   }
 
         function loadData() {
             const stored = localStorage.getItem('trackerConfig');
